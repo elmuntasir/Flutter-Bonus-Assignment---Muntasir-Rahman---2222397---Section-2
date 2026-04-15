@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "383620890267",
+    "project_id": "bonus-cb975",
+    "storage_bucket": "bonus-cb975.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:383620890267:android:92b449738d14a0e587103e",
+        "android_client_info": {
+          "package_name": "com.example.bonus_assignment"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDu3aVF2q7djPpp6oC1Zh7dyIo9_V4fIEw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
