@@ -3,17 +3,33 @@ import '../models/task_model.dart';
 import '../repositories/task_repository.dart';
 
 class AddTaskScreen extends StatefulWidget {
-  const AddTaskScreen({super.key});
+  final Task? task; // Add this line
+  const AddTaskScreen({super.key, this.task}); // Update constructor
 
   @override
   State<AddTaskScreen> createState() => _AddTaskScreenState();
 }
 
 class _AddTaskScreenState extends State<AddTaskScreen> {
-  final _titleController = TextEditingController();
-  final _descriptionController = TextEditingController();
+  late final TextEditingController _titleController;
+  late final TextEditingController _descriptionController;
   final _repository = TaskRepository();
   bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Pre-fill fields if we are editing
+    _titleController = TextEditingController(text: widget.task?.title ?? '');
+    _descriptionController = TextEditingController(text: widget.task?.description ?? '');
+  }
+
+  @override
+  void dispose() {
+    _titleController.dispose();
+    _descriptionController.dispose();
+    super.dispose();
+  }
 
   void _submit() async {
     if (_titleController.text.isEmpty || _descriptionController.text.isEmpty) {
@@ -26,11 +42,24 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
     setState(() => _isLoading = true);
 
     try {
-      final task = Task(
-        title: _titleController.text,
-        description: _descriptionController.text,
-      );
-      await _repository.addTask(task);
+      if (widget.task == null) {
+        // Add Mode
+        final task = Task(
+          title: _titleController.text,
+          description: _descriptionController.text,
+        );
+        await _repository.addTask(task);
+      } else {
+        // Edit Mode
+        final updatedTask = Task(
+          id: widget.task!.id,
+          title: _titleController.text,
+          description: _descriptionController.text,
+          createdAt: widget.task!.createdAt,
+        );
+        await _repository.updateTask(updatedTask);
+      }
+      
       if (mounted) {
         Navigator.pop(context);
       }
@@ -49,9 +78,11 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isEditing = widget.task != null;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add New Task'),
+        title: Text(isEditing ? 'Edit Task' : 'Add New Task'),
         backgroundColor: Colors.deepPurple,
         foregroundColor: Colors.white,
       ),
@@ -87,7 +118,8 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                 ),
                 child: _isLoading
                     ? const CircularProgressIndicator(color: Colors.white)
-                    : const Text('Add Task', style: TextStyle(fontSize: 18)),
+                    : Text(isEditing ? 'Save Changes' : 'Add Task', 
+                        style: const TextStyle(fontSize: 18)),
               ),
             ),
           ],
@@ -96,3 +128,4 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
     );
   }
 }
+

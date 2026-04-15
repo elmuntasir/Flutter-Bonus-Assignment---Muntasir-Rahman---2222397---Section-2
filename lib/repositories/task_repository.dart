@@ -26,6 +26,16 @@ class TaskRepository {
     }
   }
 
+  // Update Task
+  Future<void> updateTask(Task task) async {
+    try {
+      if (task.id == null) throw Exception('Task ID is required for update');
+      await _taskCollection.doc(task.id).set(task.toJson(), SetOptions(merge: true));
+    } catch (e) {
+      throw Exception('Failed to update task: $e');
+    }
+  }
+
   // Get Tasks Stream
   Stream<List<Task>> getTasks() {
     return _taskCollection
