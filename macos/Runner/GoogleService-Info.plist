@@ -9,7 +9,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.example.bonusAssignment</string>
+	<string>com.example.flutterUiClass</string>
 	<key>PROJECT_ID</key>
 	<string>bonus-cb975</string>
 	<key>STORAGE_BUCKET</key>
@@ -25,6 +25,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:383620890267:ios:5d93e2050ad156c687103e</string>
+	<string>1:383620890267:ios:d207d0ac2163238187103e</string>
 </dict>
 </plist>

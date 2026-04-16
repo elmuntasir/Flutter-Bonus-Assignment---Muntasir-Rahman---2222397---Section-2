@@ -8,13 +8,14 @@ class TaskListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final repository = TaskRepository();
+    final TaskRepository repository = TaskRepository();
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My Tasks'),
+        title: const Text('Firebase Task Manager', 
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
         backgroundColor: Colors.deepPurple,
-        foregroundColor: Colors.white,
+        elevation: 0,
       ),
       body: StreamBuilder<List<Task>>(
         stream: repository.getTasks(),
@@ -22,28 +23,25 @@ class TaskListScreen extends StatelessWidget {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
-
           if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           }
-
           final tasks = snapshot.data ?? [];
-
           if (tasks.isEmpty) {
             return const Center(child: Text('No tasks found. Add one!'));
           }
 
           return ListView.builder(
+            padding: const EdgeInsets.all(8),
             itemCount: tasks.length,
             itemBuilder: (context, index) {
               final task = tasks[index];
               return Card(
-                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                elevation: 2,
+                margin: const EdgeInsets.symmetric(vertical: 4),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 child: ListTile(
-                  title: Text(
-                    task.title,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
+                  title: Text(task.title, style: const TextStyle(fontWeight: FontWeight.bold)),
                   subtitle: Text(task.description),
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -61,39 +59,7 @@ class TaskListScreen extends StatelessWidget {
                       ),
                       IconButton(
                         icon: const Icon(Icons.delete, color: Colors.red),
-                        onPressed: () async {
-                          final confirm = await showDialog<bool>(
-                            context: context,
-                            builder: (context) => AlertDialog(
-                              title: const Text('Delete Task'),
-                              content: const Text(
-                                  'Are you sure you want to delete this task?'),
-                              actions: [
-                                TextButton(
-                                  onPressed: () => Navigator.pop(context, false),
-                                  child: const Text('Cancel'),
-                                ),
-                                TextButton(
-                                  onPressed: () => Navigator.pop(context, true),
-                                  child: const Text('Delete',
-                                      style: TextStyle(color: Colors.red)),
-                                ),
-                              ],
-                            ),
-                          );
-
-                          if (confirm == true && task.id != null) {
-                            try {
-                              await repository.deleteTask(task.id!);
-                            } catch (e) {
-                              if (context.mounted) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text('Failed to delete: $e')),
-                                );
-                              }
-                            }
-                          }
-                        },
+                        onPressed: () => repository.deleteTask(task.id!),
                       ),
                     ],
                   ),

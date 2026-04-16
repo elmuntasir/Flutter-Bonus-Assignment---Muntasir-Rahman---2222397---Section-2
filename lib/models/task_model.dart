@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Task {
@@ -13,10 +12,6 @@ class Task {
         required this.description,
         this.createdAt,
     });
-
-    factory Task.fromRawJson(String str) => Task.fromJson(json.decode(str));
-
-    String toRawJson() => json.encode(toJson());
 
     factory Task.fromJson(Map<String, dynamic> json) => Task(
         id: json["id"],

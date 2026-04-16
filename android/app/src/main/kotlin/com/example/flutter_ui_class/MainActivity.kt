@@ -1,4 +1,4 @@
-package com.example.bonus_assignment
+package com.example.flutter_ui_class
 
 import io.flutter.embedding.android.FlutterActivity
 

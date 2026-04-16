@@ -7,36 +7,23 @@ class TaskRepository {
 
   // Add Task
   Future<void> addTask(Task task) async {
-    try {
-      final docRef = _taskCollection.doc();
-      task.id = docRef.id;
-      task.createdAt = DateTime.now();
-      await docRef.set(task.toJson());
-    } catch (e) {
-      throw Exception('Failed to add task: $e');
-    }
+    final docRef = _taskCollection.doc();
+    task.id = docRef.id;
+    task.createdAt = DateTime.now();
+    await docRef.set(task.toJson());
   }
 
   // Delete Task
   Future<void> deleteTask(String taskId) async {
-    try {
-      await _taskCollection.doc(taskId).delete();
-    } catch (e) {
-      throw Exception('Failed to delete task: $e');
-    }
+    await _taskCollection.doc(taskId).delete();
   }
 
   // Update Task
   Future<void> updateTask(Task task) async {
-    try {
-      if (task.id == null) throw Exception('Task ID is required for update');
-      await _taskCollection.doc(task.id).set(task.toJson(), SetOptions(merge: true));
-    } catch (e) {
-      throw Exception('Failed to update task: $e');
-    }
+    await _taskCollection.doc(task.id).set(task.toJson(), SetOptions(merge: true));
   }
 
-  // Get Tasks Stream
+  // Get Tasks Stream (Real-time)
   Stream<List<Task>> getTasks() {
     return _taskCollection
         .orderBy('createdAt', descending: true)
